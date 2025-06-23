@@ -3,6 +3,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Download, Printer } from "lucide-react"
 
+// Define the feature flag (set this in your environment or utils file)
+const ENABLE_BILL = false; // Change to true for development
+
 interface BillDetailModalProps {
   isOpen: boolean
   onClose: () => void
@@ -27,7 +30,8 @@ interface BillDetailModalProps {
 }
 
 export function BillDetailModal({ isOpen, onClose, bill }: BillDetailModalProps) {
-  if (!bill) return null
+  // Only render if ENABLE_BILL is true or bill is null
+  if (!ENABLE_BILL || !bill) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

@@ -16,7 +16,6 @@ export default function ApplyRebate() {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [reason, setReason] = useState("");
-  const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState({ type: "", title: "", message: "" });
@@ -50,11 +49,6 @@ export default function ApplyRebate() {
       setShowToast(true);
       return;
     }
-    if (!file) {
-      setToastMessage({ type: "error", title: "Missing File", message: "Upload a document." });
-      setShowToast(true);
-      return;
-    }
 
     setLoading(true);
     try {
@@ -65,15 +59,12 @@ export default function ApplyRebate() {
         reason,
       };
       const { data: newRequest } = await studentAPI.createRebateRequest(payload);
-      await studentAPI.uploadDocument(newRequest.id, file);
 
-      // --- CHANGE START ---
       // Use user-specific key for localStorage so that rebate data is unique per user
       const rebateStorageKey = `recentRebates_user_${userData.id}`;
       const updatedRequests = JSON.parse(localStorage.getItem(rebateStorageKey) || "[]");
       updatedRequests.unshift({ ...newRequest, reason });
       localStorage.setItem(rebateStorageKey, JSON.stringify(updatedRequests.slice(0, 5)));
-      // --- CHANGE END ---
 
       setToastMessage({
         type: "success",
@@ -135,24 +126,6 @@ export default function ApplyRebate() {
               />
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="proofDocument" className="text-sm font-medium">Upload Proof Document</label>
-              <div className="border-2 border-dashed rounded-md p-6 text-center">
-                <input
-                  type="file"
-                  id="proofDocument"
-                  className="hidden"
-                  accept="application/pdf,image/jpeg,image/png"
-                  onChange={e => e.target.files?.[0] && setFile(e.target.files[0])}
-                />
-                <label htmlFor="proofDocument" className="cursor-pointer text-sky-600 hover:text-sky-800">
-                  Click to upload or drag and drop
-                </label>
-                <p className="text-sm text-gray-500 mt-2">PDF, JPG, or PNG (Max 5MB)</p>
-                {file && <p className="mt-2 text-sm text-green-600">File: {file.name}</p>}
-              </div>
-            </div>
-
             <div className="flex justify-end gap-4">
               <Button type="button" variant="outline" onClick={() => router.push("/student/dashboard")}>Cancel</Button>
               <Button type="submit" className="bg-sky-600 hover:bg-sky-700" disabled={loading}>
@@ -174,5 +147,4 @@ export default function ApplyRebate() {
     </div>
   );
 }
-
 

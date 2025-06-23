@@ -104,10 +104,12 @@ export function UserNav({ isAdmin = false }: { isAdmin?: boolean }) {
 }*/
 
 // components/user-nav.tsx
+// src/components/user-nav.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -119,7 +121,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useRouter } from "next/navigation";
+import { ENABLE_BILL } from "@/lib/utils";
 
 interface UserData {
   name: string;
@@ -132,25 +134,19 @@ export function UserNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [profileImage, setProfileImage] = useState<string>("/placeholder.svg");
-  const [mounted, setMounted] = useState(false); // Fixes hydration mismatch
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true); // component is mounted; now it's safe to access localStorage
-
+    setMounted(true);
     const key = isAdmin ? "currentAdmin" : "currentUser";
     const stored = localStorage.getItem(key);
-
     if (!stored) return;
-
     try {
       const parsed: UserData = JSON.parse(stored);
       setUserData(parsed);
-
       const imageKey = `userProfileImage_${parsed.email}`;
       const img = localStorage.getItem(imageKey);
-      setProfileImage(img ?? "/placeholder.svg");
-
-      // Listen to image updates
+      setProfileImage(img || "/placeholder.svg");
       const onStorage = (e: StorageEvent) => {
         if (e.key === imageKey) {
           setProfileImage(e.newValue || "/placeholder.svg");
@@ -187,7 +183,7 @@ export function UserNav({ isAdmin = false }: { isAdmin?: boolean }) {
           <Avatar className="h-10 w-10">
             <AvatarImage
               src={profileImage}
-              alt={userData.name || "User"}
+              alt={userData.name}
               onError={({ currentTarget }) => {
                 currentTarget.src = "/placeholder.svg";
               }}
@@ -196,60 +192,41 @@ export function UserNav({ isAdmin = false }: { isAdmin?: boolean }) {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{userData.name}</p>
-            <p className="text-xs leading-none text-muted-foreground">
-              {userData.email}
-            </p>
+            <p className="text-xs leading-none text-muted-foreground">{userData.email}</p>
             {!isAdmin && userData.rollNo && (
-              <p className="text-xs leading-none text-muted-foreground">
-                Roll No: {userData.rollNo}
-              </p>
+              <p className="text-xs leading-none text-muted-foreground">Roll No: {userData.rollNo}</p>
             )}
             {isAdmin && (
-              <p className="text-xs leading-none text-muted-foreground">
-                Role: {userData.role || "Admin"}
-              </p>
+              <p className="text-xs leading-none text-muted-foreground">Role: {userData.role || "Admin"}</p>
             )}
           </div>
         </DropdownMenuLabel>
-
         <DropdownMenuSeparator />
-
         <DropdownMenuGroup>
-          <DropdownMenuItem
-            onClick={() =>
-              router.push(isAdmin ? "/admin/settings" : "/student/profile")
-            }
-          >
+          <DropdownMenuItem onClick={() => router.push(isAdmin ? "/admin/settings" : "/student/profile")}>
             Profile
           </DropdownMenuItem>
 
-          {!isAdmin && (
-            <DropdownMenuItem onClick={() => router.push("/student/bills")}>
-              My Bills
-            </DropdownMenuItem>
+          {/* Conditionally show My Bills when billing is enabled */}
+          {!isAdmin && ENABLE_BILL && (
+            <DropdownMenuItem onClick={() => router.push("/student/bills")}>My Bills</DropdownMenuItem>
           )}
 
-          <DropdownMenuItem
-            onClick={() =>
-              router.push(isAdmin ? "/admin/dashboard" : "/student/dashboard")
-            }
-          >
+          <DropdownMenuItem onClick={() => router.push(isAdmin ? "/admin/dashboard" : "/student/dashboard")}>
             Dashboard
           </DropdownMenuItem>
         </DropdownMenuGroup>
-
         <DropdownMenuSeparator />
-
         <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
+
 
 
 

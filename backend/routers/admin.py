@@ -297,3 +297,26 @@ async def create_mess_bill(
     db.commit()
     db.refresh(mb)
     return MessBillSchema.from_orm(mb)
+
+
+@router.get("/students/list", response_model=List[dict])
+async def get_basic_student_list(
+    admin_user: User = Depends(verify_admin),
+    db: Session = Depends(get_db),
+):
+    """
+    Return list of all registered students with basic details
+    """
+    students = db.query(User).filter(User.role == UserRole.STUDENT).all()
+
+    return [
+        {
+            "id": s.id,
+            "name": s.name,
+            "roll_number": s.roll_number,
+            "email": s.email,
+            "room_number": s.room_number,
+            "phone": s.phone,
+        }
+        for s in students
+    ]

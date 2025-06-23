@@ -137,25 +137,32 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { LogOut, ChevronLeft, ChevronRight, Home, HelpCircle } from "lucide-react"
-// Add missing imports
-import { Circle, Calendar, History, Settings, Users, FileText, Receipt, User } from "lucide-react"
+import { LogOut, ChevronLeft, ChevronRight, Home, HelpCircle, Circle, Calendar, History, Settings, Users, FileText, Receipt, User } from "lucide-react"
 
-// Update the interface to accept icon names instead of components
+// Define the feature flag (set this in your environment or utils file)
+const ENABLE_BILL = false; // Change to true for development
+
 interface SidebarProps {
   items: {
     title: string
     href: string
-    icon: string // Changed from React.ElementType to string
+    icon: string
   }[]
   title: string
 }
 
-// Update the Sidebar component to render icons based on string names
 export function Sidebar({ items, title }: SidebarProps) {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+
+  // Filter items to exclude mess bill-related ones when ENABLE_BILL is false
+  const filteredItems = items.filter(item => {
+    if (item.title === "Mess Bills" && !ENABLE_BILL) {
+      return false;
+    }
+    return true;
+  });
 
   // Function to render the appropriate icon based on name
   const renderIcon = (iconName: string) => {
@@ -224,7 +231,7 @@ export function Sidebar({ items, title }: SidebarProps) {
 
         <nav className="flex-1 p-2">
           <ul className="space-y-2">
-            {items.map((item) => {
+            {filteredItems.map((item) => {
               const isActive = pathname === item.href
 
               return (

@@ -1,8 +1,6 @@
 {
-  "/page": "app/page.js",
-  "/student/request-history/page": "app/student/request-history/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/admin/login/page": "app/admin/login/page.js",
-  "/student/login/page": "app/student/login/page.js",
-  "/student/dashboard/page": "app/student/dashboard/page.js",
+  "/admin/students/page": "app/admin/students/page.js",
   "/admin/dashboard/page": "app/admin/dashboard/page.js"
 }

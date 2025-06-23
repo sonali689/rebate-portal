@@ -2,9 +2,12 @@
 
 import { Check, X, AlertCircle, Info } from "lucide-react"
 
+// Define the toast type
+export type ToastType = "success" | "error" | "warning" | "info";
+
 interface NotificationToastProps {
-  type: "success" | "error" | "warning" | "info"
-  title: string
+  type: ToastType
+  title?: string  // Make title optional since you're only passing message
   message: string
   onClose?: () => void
 }
@@ -28,7 +31,7 @@ export function NotificationToast({ type, title, message, onClose }: Notificatio
     <div className="fixed bottom-4 right-4 bg-white border shadow-lg rounded-lg p-4 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-5 z-50">
       <div className={`${bgColors[type]} p-2 rounded-full`}>{icons[type]}</div>
       <div className="flex-1">
-        <h4 className="font-medium">{title}</h4>
+        {title && <h4 className="font-medium">{title}</h4>}
         <p className="text-sm text-gray-600">{message}</p>
       </div>
       {onClose && (

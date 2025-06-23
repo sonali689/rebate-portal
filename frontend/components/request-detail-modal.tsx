@@ -54,12 +54,12 @@ export function RequestDetailModal({ isOpen, onClose, request }: RequestDetailMo
             <p>{request.reason}</p>
           </div>
 
-          <div>
+          {/*<div>
             <h4 className="text-sm font-medium">Proof Document</h4>
             <Button variant="outline" className="w-full">
               <FileText className="mr-2 h-4 w-4" /> View Document
             </Button>
-          </div>
+          </div>*/}
 
           {request.status === "Rejected" && request.rejectionReason && (
             <div>

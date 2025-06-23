@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, FileText, Check, X } from "lucide-react";
 import { RequestDetailModal } from "@/components/request-detail-modal";
 import { RejectModal } from "@/components/reject-modal";
-import { DocumentViewerModal } from "@/components/document-viewer-modal";
+//import { DocumentViewerModal } from "@/components/document-viewer-modal";
 import { NotificationToast } from "@/components/notification-toast";
 import { UserNav } from "@/components/user-nav";
 import { adminAPI } from "@/lib/api";
@@ -20,7 +20,7 @@ type RebateRequest = {
   reason: string;
   status: string;
   submitted_on: string;
-  document_url?: string;
+  //document_url?: string;
   rejection_reason?: string | null;
 };
 
@@ -32,7 +32,7 @@ export default function AdminDashboard() {
   const [selectedRequest, setSelectedRequest] = useState<RebateRequest | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
-  const [showDocumentModal, setShowDocumentModal] = useState(false);
+  //const [showDocumentModal, setShowDocumentModal] = useState(false);
 
   const [toastMessage, setToastMessage] = useState<{ type: string; title: string; message: string } | null>(null);
 
@@ -60,10 +60,10 @@ export default function AdminDashboard() {
     setShowDetailsModal(true);
   };
 
-  const handleViewDocument = (req: RebateRequest) => {
-    setSelectedRequest(req);
-    setShowDocumentModal(true);
-  };
+  //const handleViewDocument = (req: RebateRequest) => {
+    //setSelectedRequest(req);
+    //setShowDocumentModal(true);
+  //};
 
   const handleApprove = async (req: RebateRequest) => {
     try {
@@ -130,9 +130,9 @@ export default function AdminDashboard() {
                     </div>
                     <p className="mt-2"><strong>Reason:</strong> {req.reason}</p>
                     <div className="mt-4 flex gap-2">
-                      <Button variant="outline" onClick={() => handleViewDocument(req)}>
+                      {/*<Button variant="outline" onClick={() => handleViewDocument(req)}>
                         <FileText className="mr-1 h-4 w-4"/> Document
-                      </Button>
+                      </Button>*/}
                       <Button variant="outline" onClick={() => handleViewDetails(req)}>
                         <FileText className="mr-1 h-4 w-4"/> Details
                       </Button>
@@ -179,9 +179,9 @@ export default function AdminDashboard() {
                     <p className="mt-2 text-red-600"><strong>Rejection Reason:</strong> {req.rejection_reason}</p>
                   )}
                   <div className="mt-4 flex gap-2">
-                    <Button variant="outline" onClick={() => handleViewDocument(req)}>
+                    {/*<Button variant="outline" onClick={() => handleViewDocument(req)}>
                       <FileText className="mr-1 h-4 w-4"/> Document
-                    </Button>
+                    </Button>*/}
                     <Button variant="outline" onClick={() => handleViewDetails(req)}>
                       <FileText className="mr-1 h-4 w-4"/> Details
                     </Button>
@@ -220,14 +220,14 @@ export default function AdminDashboard() {
         />
       )}
 
-      {selectedRequest && (
+      {/*{selectedRequest && (
         <DocumentViewerModal
           isOpen={showDocumentModal}
           onClose={() => setShowDocumentModal(false)}
           documentUrl={selectedRequest.document_url || ""}
           studentName={selectedRequest.name}
         />
-      )}
+      )}*/}
 
       {toastMessage && (
         <NotificationToast
